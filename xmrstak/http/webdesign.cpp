@@ -46,6 +46,24 @@ extern const char sHtmlCssFile [] =
 		"font-size: 75%;"
 		"text-align: right;"
 	"}"
+	
+	".datetimec {"				// @AB
+		"font-size: 80%;"
+		"text-align: left;"
+	"}"	
+	
+	".button  {"			//@AB
+		"background-color: #b3ffb3; /* WASABI */"
+		"border: none;"
+		"color: black;"
+		"padding: 15px 32px;"
+		"text-align: center;"
+		"text-decoration: none;"
+		"display: inline-block;"
+		"font-size: 15px;"
+		"margin: 4px 2px;"
+		"cursor: pointer;"		
+	"}"
 
 	".links {"
 		"padding: 7px;"
@@ -132,18 +150,26 @@ extern const char sHtmlCommonHeader [] =
 	"<body>"
 	"<div class='all'>"
 	"<div class='version'>%s</div>"
-	"<div class='header'><span style='color: rgb(255, 160, 0)'>XMR</span>-Stak Monero Miner</div>"
+	"<div class='datetimec'>%s</div>"
+	"<div ><font color=\"red\" size=\"4\">%s</font></div>"
+	"<div class='header'><span style='color: rgb(255, 160, 0)'>XMR</span>-Stak Monero Miner - <font color=\"#b3ffb3\">WASABI</font> edition</div>"
 
 	"<div class='flex-container'>"
 		"<div class='links flex-item'>"
-			"<a href='h'><div><span class='letter'>H</span>ashrate</div></a>"
+			"<a href='/h'><div><span class='letter'>H</span>ashrate</div></a>"
 		"</div>"
 		"<div class='links flex-item'>"
-			"<a href='r'><div><span class='letter'>R</span>esults</div></a>"
+			"<a href='/r'><div><span class='letter'>R</span>esults</div></a>"
 		"</div>"
 		"<div class='links flex-item'>"
-			"<a href='c'><div><span class='letter'>C</span>onnection</div></a>"
+			"<a href='/c'><div><span class='letter'>C</span>onnection</div></a>"
 		"</div>"
+		"<div class='links flex-item'>"
+			"<a href='/m'><div><span class='letter'>M</span>onitor</div></a>"
+		"</div>"		
+		"<div class='links flex-item'>"
+			"<a href='/p'><div><span class='letter'>P</span>anel</div></a>"
+		"</div>"			
 	"</div>"
 	"<h4>%s</h4>";
 
@@ -156,6 +182,37 @@ extern const char sHtmlHashrateBodyHigh [] =
 	"<table>"
 		"<tr><th>Thread ID</th><th>10s</th><th>60s</th><th>15m</th><th rowspan='%u'>H/s</td></tr>";
 
+		
+extern const char sHtmlPanelBodyHigh [] =	//@AB
+	"<script>"
+	"function funz(a) "
+	"{"
+
+		"if( a == 0 )"
+		"{"
+			"if( confirm(\"Are you sure to turn off your computer?\") )"
+				"document.location.href = \"/action_shutdown_pc\";"
+		"}"
+		"else if( a == 1 )"
+		"{"
+			"if( confirm(\"Are you sure to restart your computer?\") )"
+				"document.location.href = \"/action_restart_pc\";"				
+		"}"
+		"else if( a == 2 )"
+		"{"
+			"if( confirm(\"%s\") )"
+				"document.location.href = \"/action_pause_miner\";"				
+		"}"	
+	"}"
+	"</script>"	
+	"<div class='data'>"
+		"<div class='flex-container'>"	
+			"<button class=\"button\" onclick=\"funz(0)\">Shutdown PC</button>"		
+			"<button class=\"button\" onclick=\"funz(1)\">Restart PC</button>"		
+			"<button class=\"button\" onclick=\"funz(2)\">%s</button>"					
+	"</div>";
+	
+		
 extern const char sHtmlHashrateTableRow [] =
 	"<tr><th>%u</th><td>%s</td><td>%s</td><td>%s</td></tr>";
 
@@ -202,6 +259,26 @@ extern const char sHtmlResultBodyHigh [] =
 	"<table>"
 		"<tr><th colspan='2'>Error text</th></tr>"
 		"<tr><th style='width: 5em;'>Count</th><th>Last seen</th></tr>";
+		
+extern const char sHtmlMonitorBodyHigh [] =	//@AB
+	"<div class='data'>"
+	"<table>"
+		"<tbody>"
+			"<tr>"
+				"<th>Component</th><th>Type</th><th>Value</th>"	
+				"</tr>";	
+
+extern const char sHtmlPanelHashBodyHigh [] =	//@AB
+	"<h4>Monero mining extimations</h4>"
+	"<div class='data'>"
+	"<table>"
+		"<tbody>"
+			"<tr>"
+				"<th>Daily</th><th>Weekly</th><th>Montly</th>"	
+			"</tr>"
+			"<tr>"
+				"<td>%s</td><td>%s</td><td>%s</td>"	
+			"</tr>";								
 
 extern const char sHtmlResultTableRow [] =
 	"<tr><td colspan='2'>%s</td></tr><tr><td>%llu</td><td>%s</td></tr>";

@@ -134,6 +134,51 @@ int httpd::req_handler(void * cls,
 		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
 		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
 	}
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//@AB
+	else if(strcasecmp(url, "/m") == 0 || strcasecmp(url, "/monitor") == 0)	//@AB
+	{
+		executor::inst()->get_http_report(EV_HTML_MONITOR, str);
+
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}	
+	else if(strcasecmp(url, "/p") == 0 || strcasecmp(url, "/panel") == 0)	//@AB
+	{
+		executor::inst()->get_http_report(EV_HTML_PANEL, str);
+
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}		
+	else if(strcasecmp(url, "/action_shutdown_pc") == 0 )	// @AB
+	{
+		executor::inst()->push_event(ex_event(EV_SHUTDOWN_PC));
+
+		str = "<meta http-equiv=\"refresh\" content=\"0;URL=/p\">";
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}	
+	else if(strcasecmp(url, "/action_restart_pc") == 0 )	// @AB
+	{
+		executor::inst()->push_event(ex_event(EV_RESTART_PC));
+
+
+		str = "<meta http-equiv=\"refresh\" content=\"0;URL=/p\">";
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}	
+	else if(strcasecmp(url, "/action_pause_miner") == 0 )	// @AB
+	{
+		executor::inst()->push_event(ex_event(EV_PAUSE_MINER));
+		
+		str = "<meta http-equiv=\"refresh\" content=\"0;URL=/p\">";
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}		
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	
 	else
 	{
 		//Do a 302 redirect to /h
