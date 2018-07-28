@@ -6,7 +6,7 @@ XMR-Stak is a universal Stratum pool miner. This miner supports CPUs, AMD and NV
 Our wasabi edition is a custom xmr-stak version with more features and improvements.
 
 ## HTML reports
-<img src="https://gist.githubusercontent.com/fireice-uk/2da301131ac01695ff79539a27b81d68/raw/4c09cdeee86f94df2e9dd86b927e64aded6184f5/xmr-stak-cpu-hashrate.png" width="260"> <img src="https://gist.githubusercontent.com/fireice-uk/2da301131ac01695ff79539a27b81d68/raw/4c09cdeee86f94df2e9dd86b927e64aded6184f5/xmr-stak-cpu-results.png" width="260"> <img src="https://gist.githubusercontent.com/fireice-uk/2da301131ac01695ff79539a27b81d68/raw/4c09cdeee86f94df2e9dd86b927e64aded6184f5/xmr-stak-cpu-connection.png" width="260">
+<img src="https://i.redd.it/aqdq1lnkrz711.png"><img src="https://i.redd.it/1v8lndvlrz711.png">
 
 ## Video setup guide on Windows
 
