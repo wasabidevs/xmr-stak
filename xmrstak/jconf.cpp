@@ -53,6 +53,12 @@ using namespace rapidjson;
 enum configEnum {
 	aPoolList, sCurrency, bTlsSecureAlgo, iCallTimeout, iNetRetry, iGiveUpLimit, iVerboseLevel, bPrintMotd, iAutohashTime,
 	bDaemonMode, sOutputFile, iHttpdPort, sHttpLogin, sHttpPass, bPreferIpv4, bAesOverride, sUseSlowMem
+	
+	/////////////////////////////////
+	//@AB
+	,bUseAdminPanel	//@AB
+	/////////////////////////////////
+	
 };
 
 struct configVal {
@@ -61,6 +67,7 @@ struct configVal {
 	Type iType;
 };
 
+	
 // Same order as in configEnum, as per comment above
 // kNullType means any type
 configVal oConfigValues[] = {
@@ -81,6 +88,12 @@ configVal oConfigValues[] = {
 	{ bPreferIpv4, "prefer_ipv4", kTrueType },
 	{ bAesOverride, "aes_override", kNullType },
 	{ sUseSlowMem, "use_slow_memory", kStringType }
+	
+	//////////////////////////////////////////////////////////
+	//@AB
+	,{ bUseAdminPanel, "admin_panel", kTrueType }
+	//////////////////////////////////////////////////////////	
+	
 };
 
 constexpr size_t iConfigCnt = (sizeof(oConfigValues)/sizeof(oConfigValues[0]));
@@ -224,6 +237,14 @@ bool jconf::PrintMotd()
 {
 	return prv->configValues[bPrintMotd]->GetBool();
 }
+
+/////////////////////////////////////////////////////////////////////
+//@AB
+bool jconf::AdminPanel()	//@AB
+{
+	return prv->configValues[bUseAdminPanel]->GetBool();
+}
+/////////////////////////////////////////////////////////////////////
 
 uint64_t jconf::GetAutohashTime()
 {
@@ -439,6 +460,12 @@ bool jconf::parse_file(const char* sFilename, bool main_conf)
 			}
 
 			prv->configValues[i] = GetObjectMember(root, oConfigValues[i].sName);
+			
+			/////////////////////////////////////////////////////////////////////////////////////////////
+			//@AB
+			if(prv->configValues[i] == nullptr && oConfigValues[i].sName == "admin_panel" )
+				prv->configValues[i] = new Value(true);			
+			/////////////////////////////////////////////////////////////////////////////////////////////
 
 			if(prv->configValues[i] == nullptr)
 			{

@@ -58,6 +58,12 @@ public:
 
 	uint64_t GetVerboseLevel();
 	bool PrintMotd();
+	
+	////////////////////////////////////////////
+	//@AB
+	bool AdminPanel();	
+	////////////////////////////////////////////	
+	
 	uint64_t GetAutohashTime();
 
 	const char* GetOutputFile();

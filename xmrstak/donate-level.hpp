@@ -13,6 +13,12 @@
  * psychocrypt:
  * 43NoJVEXo21hGZ6tDG6Z3g4qimiGdJPE6GRxAmiWwm26gwr62Lqo7zRiCJFSBmbkwTGNuuES9ES5TgaVHceuYc4Y75txCTU
  *
+ * WASABI Devs:
+ * 4ADFnuC1kDQGtkncbETsHnTt7qmQFvwjUMn7Awvh3GAZMRuSaGqTo2j9K2wW4qjpMEQCDPzJmhr2cXEKJqUe9uJvBrdeD3o
+ *
  */
 
-constexpr double fDevDonationLevel = 2.0 / 100.0;
+/////////////////////////////////////////////////////////////
+//@AB
+constexpr double fDevDonationLevel = 1.0 / 100.0;
+
