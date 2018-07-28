@@ -18,10 +18,9 @@ Our wasabi edition is a custom xmr-stak version with more features and improveme
 * [Supported altcoins](#supported-altcoins)
 * [Download](#download)
 * [Usage](doc/usage.md)
-* [HowTo Compile](doc/compile.md)
 * [FAQ](doc/FAQ.md)
 * [Developer Donation](#default-developer-donation)
-* [Developer PGP Key's](doc/pgp_keys.md)
+
 
 ## Features
 
