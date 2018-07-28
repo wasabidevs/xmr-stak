@@ -41,6 +41,9 @@ namespace xmrstak
 		std::atomic<uint64_t> iTimestamp;
 		uint32_t iThreadNo;
 		BackendType backendType = UNKNOWN;
+		
+		bool doPausa;	//@AB
+		bool inPausa;	//@AB		
 
 		iBackend() : iHashCount(0), iTimestamp(0)
 		{
