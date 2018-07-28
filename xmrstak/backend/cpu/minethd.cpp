@@ -106,6 +106,9 @@ bool minethd::thd_setaffinity(std::thread::native_handle_type h, uint64_t cpu_id
 
 minethd::minethd(miner_work& pWork, size_t iNo, int iMultiway, bool no_prefetch, int64_t affinity)
 {
+	doPausa = false;	//@AB
+	inPausa = false;	//@AB
+	
 	this->backendType = iBackend::CPU;
 	oWork = pWork;
 	bQuit = 0;
@@ -490,6 +493,17 @@ void minethd::work_main()
 
 	while (bQuit == 0)
 	{
+		////////////////////////////////
+		//@AB
+		if( doPausa )	
+		{
+			inPausa = true;
+			continue;
+		}
+		else	
+			inPausa = false;		
+		////////////////////////////////
+		
 		if (oWork.bStall)
 		{
 			/* We are stalled here because the executor didn't find a job for us yet,
