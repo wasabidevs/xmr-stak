@@ -1,0 +1,10 @@
+C:\Sviluppo\C#\Wasabi\Wasabi\bin\Debug\Wasabi.exe.config
+C:\Sviluppo\C#\Wasabi\Wasabi\bin\Debug\Wasabi.exe
+C:\Sviluppo\C#\Wasabi\Wasabi\bin\Debug\Wasabi.pdb
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.csprojAssemblyReference.cache
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.Form1.resources
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.Properties.Resources.resources
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.csproj.GenerateResource.cache
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.csproj.CoreCompileInputs.cache
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.exe
+C:\Sviluppo\C#\Wasabi\Wasabi\obj\Debug\Wasabi.pdb
