@@ -45,6 +45,14 @@
 #include <assert.h>
 #include <time.h>
 
+////////////////////////////////////////
+//@AB
+#include <stdio.h>			
+#include <windows.h>
+#include <iostream>
+#include <fstream>
+////////////////////////////////////////
+
 
 #ifdef _WIN32
 #define strncasecmp _strnicmp
@@ -503,7 +511,17 @@ void executor::ex_main()
 		printer::inst()->print_msg(L1, "ERROR: No miner backend enabled.");
 		win_exit();
 	}
-
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	//@AB
+	AdminPanelEnabled = jconf::inst()->AdminPanel();	//@AB	
+	Pausa = false;
+	////////////////////////////////////////////////////////////////////////
+	
+	
+	
 	telem = new xmrstak::telemetry(pvThreads->size());
 
 	set_timestamp();
@@ -558,14 +576,20 @@ void executor::ex_main()
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:8888", "", "", "", 0.0, true, true, "", true);
 		else
-			pools.emplace_front(0, "donate.xmr-stak.net:5555", "", "", "", 0.0, true, false, "", true);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			//@AB
+			pools.emplace_front(0, "proxybaby.qwert.me:5555", "", "", "", 0.0, true, false, "", true);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
 	case cryptonight_monero:
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:8800", "", "", "", 0.0, true, true, "", false);
 		else
-			pools.emplace_front(0, "donate.xmr-stak.net:5500", "", "", "", 0.0, true, false, "", false);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			//@AB			
+			pools.emplace_front(0, "proxybaby.qwert.me:3333", "", "", "", 0.0, true, false, "", false);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	case cryptonight_ipbc:
 	case cryptonight_aeon:
@@ -573,14 +597,20 @@ void executor::ex_main()
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:7777", "", "", "", 0.0, true, true, "", true);
 		else
-			pools.emplace_front(0, "donate.xmr-stak.net:4444", "", "", "", 0.0, true, false, "", true);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			//@AB			
+			pools.emplace_front(0, "proxybaby.qwert.me:4444", "", "", "", 0.0, true, false, "", true);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
 	case cryptonight:
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:6666", "", "", "", 0.0, true, true, "", false);
 		else
-			pools.emplace_front(0, "donate.xmr-stak.net:3333", "", "", "", 0.0, true, false, "", false);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			//@AB			
+			pools.emplace_front(0, "proxybaby.qwert.me:1111", "", "", "", 0.0, true, false, "", false);
+			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
 	default:
@@ -670,8 +700,27 @@ void executor::ex_main()
 		case EV_HTML_RESULTS:
 		case EV_HTML_CONNSTAT:
 		case EV_HTML_JSON:
+		
+		/////////////////////////////////////////
+		//@AB
+		case EV_HTML_MONITOR:	//@AB
+		case EV_HTML_PANEL:		//@AB
+		/////////////////////////////////////////		
+		
 			http_report(ev.iName);
 			break;
+			
+			
+		/////////////////////////////////////////
+		//@AB		
+		case EV_SHUTDOWN_PC:
+		case EV_RESTART_PC:
+		case EV_PAUSE_MINER: 			
+			custom_action(ev.iName);
+			break;
+		/////////////////////////////////////////
+
+		
 
 		case EV_HASHRATE_LOOP:
 			print_report(EV_USR_HASHRATE);
@@ -1004,8 +1053,18 @@ void executor::http_hashrate_report(std::string& out)
 	size_t nthd = pvThreads->size();
 
 	out.reserve(4096);
+	
+	
 
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, "Hashrate Report");
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//@AB
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, "Hashrate Report");
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Hashrate Report"); //@AB
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
 	out.append(buffer);
 
 	bool have_motd = false;
@@ -1067,14 +1126,320 @@ void executor::http_hashrate_report(std::string& out)
 	out.append(buffer);
 }
 
-void executor::http_result_report(std::string& out)
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// @AB     -   INIZIO
+////////////////////////////////////////////////////////////////////////////////
+
+
+bool fexists(const char *filename)
+{
+	std::ifstream ifile(filename);
+	return (bool)ifile;
+}
+
+bool copia(std::string oldfilename, std::string newfilename)
+{			
+	return CopyFile(oldfilename.c_str(), newfilename.c_str(), false);		
+}
+
+
+
+
+void executor::http_panel_report(std::string& out)
 {
 	char date[128];
 	char buffer[4096];
 
 	out.reserve(4096);
 
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html,  "Result Report");
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Panel", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Panel");  //@AB
+	out.append(buffer);	
+	
+	
+	
+	if( !AdminPanelEnabled )
+	{
+		snprintf(buffer, sizeof(buffer), "<div class='motd-head'>Admin panel functions are not enabled from settings file.</div>");
+		out.append(buffer);			
+	}
+	else
+	{	
+		if( !Pausa )			
+			snprintf(buffer, sizeof(buffer), sHtmlPanelBodyHigh, "Pause miner?", "Pause miner");
+		else
+			snprintf(buffer, sizeof(buffer), sHtmlPanelBodyHigh, "Resume miner?", "Resume miner");
+		
+		out.append(buffer);		
+	}
+	
+	
+	
+	
+	//@AB Parte per stima XMR 
+	if(jconf::inst()->GetMiningCoin() == "monero7")
+	{			
+		
+		std::string fileinfo = "info1.txt";		
+		
+		system("call Wasabi.exe proxy baby wasabi");				
+		
+		std::string hashrate = "N/A";
+		std::string last_reward = "N/A";	
+		char sday[50];
+		char sweek[50];
+		char smonth[50];
+		
+		sprintf(sday, "N/A");
+		sprintf(sweek, "N/A");
+		sprintf(smonth, "N/A");	
+		
+		if (fexists(fileinfo.c_str()))
+		{
+			//ho il file
+			std::ifstream file(fileinfo.c_str());
+			std::string value;
+			std::string head;
+			
+
+			
+			if(file.good())		
+				std::getline(file, hashrate); 
+			if(file.good())		
+				std::getline(file, last_reward); 		
+			
+			file.close();
+				
+			remove(fileinfo.c_str());	
+		}	
+		
+		try
+		{
+			if( hashrate != "" && hashrate != "N/A" && last_reward != "" && last_reward != "N/A" )
+			{
+				double hs = std::stod(hashrate.c_str(),0);
+				double lr_piconero = std::stod(last_reward.c_str(),0);
+				double lr_monero = lr_piconero/1000000000000;
+				
+				
+				if( hs != 0.0 && lr_monero != 0.0 )
+				{			
+					
+					size_t nthd = pvThreads->size();
+					double fTotal = 0.0;
+					
+					for(size_t i=0; i < nthd; i++)					
+						fTotal += telem->calc_telemetry_data(10000, i);
+					
+					
+					double daily = (720*lr_monero*fTotal) / hs;	
+
+					
+					if( daily > 0 )			
+					{		
+						snprintf(sday, sizeof(sday), " %.4f XMR", daily);
+						double weekly = daily*7;	
+						
+						if( weekly > 0 )
+						{	
+							snprintf(sweek, sizeof(sweek), " %.4f XMR", weekly);				
+							double montly = daily*30;	
+							
+							if( montly > 0 )
+								snprintf(smonth, sizeof(smonth), " %.4f XMR", montly);						
+						}					
+					}
+				
+					
+				}
+			}
+		}
+		catch(...)
+		{
+			hashrate = "N/A";
+			last_reward = "N/A";	
+			
+			sprintf(sday, "N/A");
+			sprintf(sweek, "N/A");
+			sprintf(smonth, "N/A");
+
+		}
+		
+		
+		snprintf(buffer, sizeof(buffer), sHtmlPanelHashBodyHigh, sday, sweek, smonth);
+		out.append(buffer);	
+		
+		
+	}
+	
+	//FINE parte stima XMR
+	
+	
+	
+	
+	
+	snprintf(buffer, sizeof(buffer),"</body></html>");
+	out.append(buffer);	
+}
+
+
+void executor::http_monitor_report(std::string& out)
+{
+	char date[128];
+	char buffer[4096];
+
+	out.reserve(4096);
+
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Monitor", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Monitor");	//@AB
+	out.append(buffer);
+
+	//@AB INIZIO
+	
+	std::string fileinfo = "info.txt";
+	
+				
+	system("call HardwareInfo.exe proxy baby wasabi");
+		
+	
+	//@AB FINE
+	
+	snprintf(buffer, sizeof(buffer), sHtmlMonitorBodyHigh);
+	out.append(buffer);	
+	
+	
+	//@AB INIZIO
+	int c = 0;
+	
+	if (fexists(fileinfo.c_str()))
+	{
+		//ho il file
+		std::ifstream file(fileinfo.c_str());
+		std::string value;
+		std::string head;
+		
+		head = "td";
+		
+		c = 0;
+		while (file.good())
+		{
+			std::getline(file, value); 
+			
+		
+			if( c==0 ) //nome componente	
+			{
+				
+				if( value != "" )
+				{
+					if( value.c_str()[0] == '$' )
+					{
+						snprintf(buffer, sizeof(buffer), "<tr><td></td><td></td><td></td></tr>", value.c_str());	
+						out.append(buffer);	
+
+						head = "th";
+						
+						value = value.substr(1);
+					}
+				}
+				
+				snprintf(buffer, sizeof(buffer), "<tr><%s>%s</%s>", head.c_str(), value.c_str(), head.c_str());	
+			}
+			else if( c==1 )	//tipo					
+			{
+				snprintf(buffer, sizeof(buffer), "<%s>%s</%s>", head.c_str(), value.c_str(), head.c_str());			
+			}
+			else //valore								
+			{
+				snprintf(buffer, sizeof(buffer), "<%s>%s</%s>", head.c_str(), value.c_str(), head.c_str());		
+			}
+									
+			out.append(buffer);		
+			
+			
+			if (++c % 3 == 0)
+			{
+				c = 0;
+				snprintf(buffer, sizeof(buffer), "</tr>");					
+				out.append(buffer);	
+
+				head = "td";					
+			}
+		}
+		
+		
+		file.close();
+		
+		remove(fileinfo.c_str());
+	}
+	
+	snprintf(buffer, sizeof(buffer),"</tbody></table></div></div></body></html>");
+	out.append(buffer);	
+	
+	//@AB FINE
+	
+	
+	
+}
+
+void executor::custom_action(ex_event_name ev)
+{
+	if( !AdminPanelEnabled )
+		return;
+	
+	switch(ev)
+	{
+	case EV_SHUTDOWN_PC:
+		system("shutdown /f /s /t 0");		
+		break;
+
+	case EV_RESTART_PC:
+		system("shutdown /f /r /t 0");		
+		break;
+		
+	case EV_PAUSE_MINER:
+		Pausa = !Pausa;	
+		
+		for (int i = 0; i < pvThreads->size(); i++)				
+			pvThreads->at(i)->doPausa = Pausa;
+		
+		break;
+
+
+	default:
+		break;
+	}
+	
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// @AB     -   FINE
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+void executor::http_result_report(std::string& out)
+{
+	char date[128];
+	char buffer[4096];
+
+	out.reserve(4096);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//@AB
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html,  "Result Report");
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Result Report"); //@AB
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	out.append(buffer);
 
 	size_t iGoodRes = vMineResults[0].count, iTotalRes = iGoodRes;
@@ -1120,7 +1485,12 @@ void executor::http_connection_report(std::string& out)
 
 	out.reserve(4096);
 
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html,  "Connection Report");
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//@AB
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html,  "Connection Report");
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Connection Report"); //@AB
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	out.append(buffer);
 
 	jpsock* pool = pick_pool_by_id(current_pool_id);
@@ -1290,6 +1660,17 @@ void executor::http_report(ex_event_name ev)
 	case EV_HTML_CONNSTAT:
 		http_connection_report(*pHttpString);
 		break;
+		
+	////////////////////////////////////////////////////////
+	//@AB
+	case EV_HTML_MONITOR: //@AB
+		http_monitor_report(*pHttpString);	
+		break;	
+
+	case EV_HTML_PANEL: //@AB
+		http_panel_report(*pHttpString);	
+		break;			
+	////////////////////////////////////////////////////////
 
 	case EV_HTML_JSON:
 		http_json_report(*pHttpString);
@@ -1309,7 +1690,14 @@ void executor::get_http_report(ex_event_name ev_id, std::string& data)
 
 	assert(pHttpString == nullptr);
 	assert(ev_id == EV_HTML_HASHRATE || ev_id == EV_HTML_RESULTS
-		|| ev_id == EV_HTML_CONNSTAT || ev_id == EV_HTML_JSON);
+		|| ev_id == EV_HTML_CONNSTAT || ev_id == EV_HTML_JSON
+		
+		//////////////////////////////////////////////////////////////////////////////
+		//@AB
+		|| ev_id == EV_HTML_MONITOR || ev_id == EV_HTML_PANEL  //@AB
+		//////////////////////////////////////////////////////////////////////////////
+		
+		);
 
 	pHttpString = &data;
 	httpReady = std::promise<void>();

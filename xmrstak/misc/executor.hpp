@@ -60,6 +60,68 @@ private:
 	// Dev donation time period in seconds. 100 minutes by default.
 	// We will divide up this period according to the config setting
 	constexpr static size_t iDevDonatePeriod = 100 * 60;
+	
+	
+	
+	
+	
+////////////////////////////////////////////////////////////////////////////////
+// @AB - INIZIO
+////////////////////////////////////////////////////////////////////////////////
+
+	
+	bool AdminPanelEnabled;
+	bool Pausa;
+	
+	inline void comp_localtime_mia(const time_t* ctime, tm* stime)
+	{
+	#ifdef _WIN32
+		localtime_s(stime, ctime);
+	#else
+		localtime_r(ctime, stime);
+	#endif // __WIN32
+	}
+	
+	void custom_action(ex_event_name ev);
+	
+	const std::string currentDateTime() 
+	{
+		char buf[1024];
+		size_t bpos;
+		tm stime;
+
+		time_t now = time(nullptr);
+		comp_localtime_mia(&now, &stime);
+		strftime(buf, sizeof(buf), "%F %T", &stime);
+		
+		return buf;
+	}
+	
+	const std::string getMinerStatus() 
+	{			
+		if( almenoUnThreadLavora() )
+			return "";
+		else return "xmr-stak is currently paused.";
+	}
+	
+	bool almenoUnThreadLavora() 
+	{						
+		for (int i = 0; i < pvThreads->size(); i++)				
+			if( !pvThreads->at(i)->inPausa )
+				return true;
+						
+		return false;	
+	}
+	
+	
+////////////////////////////////////////////////////////////////////////////////
+// @AB - FINE
+////////////////////////////////////////////////////////////////////////////////		
+
+
+
+	
+		
 
 	inline bool is_dev_time()
 	{
@@ -106,7 +168,14 @@ private:
 	void http_result_report(std::string& out);
 	void http_connection_report(std::string& out);
 	void http_json_report(std::string& out);
-
+	
+	//////////////////////////////////////////////////////////////////////
+	//@AB
+	void http_monitor_report(std::string& out);		//@AB
+	void http_panel_report(std::string& out); 		//@AB		
+	//////////////////////////////////////////////////////////////////////
+	
+	
 	void http_report(ex_event_name ev);
 	void print_report(ex_event_name ev);
 
