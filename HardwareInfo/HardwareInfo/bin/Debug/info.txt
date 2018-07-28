@@ -1,0 +1,60 @@
+$ASUS P8P67 DELUXE
+Mainboard
+N/A
+$Intel Core i7-2600K
+CPU
+N/A
+CPU Core #1
+Load
+50,0 %
+CPU Core #2
+Load
+0,0 %
+CPU Core #3
+Load
+0,0 %
+CPU Core #4
+Load
+0,0 %
+CPU Total
+Load
+12,5 %
+$Generic Memory
+RAM
+N/A
+$Used Memory
+Data
+N/A
+$Available Memory
+Data
+N/A
+$AMD Radeon HD 6800 Series
+Graphics Card
+N/A
+GPU Core
+Temperature
+44 C
+GPU Fan
+Fan
+1218 RPM
+GPU Fan
+Control
+29,0 %
+GPU Core
+Clock
+100,0 MHZ
+GPU Memory
+Clock
+150,0 MHZ
+GPU Core
+Voltage
+1,0 V
+GPU Core
+Load
+0,0 %
+$Generic Hard Disk
+HDD
+N/A
+$Generic Hard Disk
+HDD
+N/A

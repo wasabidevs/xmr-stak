@@ -1,0 +1,1 @@
+DegreesInCelsius=1

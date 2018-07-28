@@ -1,0 +1,13 @@
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\bin\Debug\HardwareInfo.exe.config
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\bin\Debug\HardwareInfo.exe
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\bin\Debug\HardwareInfo.pdb
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.csprojAssemblyReference.cache
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.Form1.resources
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.Properties.Resources.resources
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.csproj.GenerateResource.cache
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.csproj.CoreCompileInputs.cache
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.exe
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.pdb
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\bin\Debug\hcwgenericclasses.dll
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\bin\Debug\OpenHardwareMonitorLib.dll
+C:\Sviluppo\C#\HardwareInfo\HardwareInfo\HardwareInfo\obj\Debug\HardwareInfo.csproj.CopyComplete
