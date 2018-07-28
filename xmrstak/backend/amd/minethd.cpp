@@ -49,6 +49,9 @@ namespace amd
 
 minethd::minethd(miner_work& pWork, size_t iNo, GpuContext* ctx, const jconf::thd_cfg cfg)
 {
+	doPausa = false;	//@AB
+	inPausa = false;	//@AB
+	
 	this->backendType = iBackend::AMD;
 	oWork = pWork;
 	bQuit = 0;
@@ -182,6 +185,17 @@ void minethd::work_main()
 
 	while (bQuit == 0)
 	{
+		//////////////////////////////
+		//@AB
+		if( doPausa )
+		{
+			inPausa = true;
+			continue;
+		}
+		else	
+			inPausa = false;
+		//////////////////////////////
+		
 		if (oWork.bStall)
 		{
 			/* We are stalled here because the executor didn't find a job for us yet,
