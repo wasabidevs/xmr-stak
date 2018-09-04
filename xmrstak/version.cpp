@@ -21,7 +21,7 @@
 #define XMR_STAK_NAME "xmr-stak"
 //////////////////////////////////////////////////////////
 //@AB
-#define XMR_STAK_VERSION "2.4.7 - WASABI v1.0 "
+#define XMR_STAK_VERSION "2.4.7 - WASABI v2.0 "
 //////////////////////////////////////////////////////////
 
 #if defined(_WIN32)
