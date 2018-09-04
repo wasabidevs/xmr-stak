@@ -175,7 +175,15 @@ int httpd::req_handler(void * cls,
 		str = "<meta http-equiv=\"refresh\" content=\"0;URL=/p\">";
 		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
 		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
-	}		
+	}	
+	else if(strcasecmp(url, "/action_pause_gpu") == 0 )	// @AB
+	{
+		executor::inst()->push_event(ex_event(EV_PAUSE_GPU));
+		
+		str = "<meta http-equiv=\"refresh\" content=\"0;URL=/p\">";
+		rsp = MHD_create_response_from_buffer(str.size(), (void*)str.c_str(), MHD_RESPMEM_MUST_COPY);
+		MHD_add_response_header(rsp, "Content-Type", "text/html; charset=utf-8");
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	

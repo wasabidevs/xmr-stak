@@ -200,8 +200,13 @@ extern const char sHtmlPanelBodyHigh [] =	//@AB
 		"}"
 		"else if( a == 2 )"
 		"{"
-			"if( confirm(\"%s\") )"
+			"if( confirm(\"Confirm action?\") )"
 				"document.location.href = \"/action_pause_miner\";"				
+		"}"	
+		"else if( a == 3 )"
+		"{"
+			"if( confirm(\"Confirm action?\") )"
+				"document.location.href = \"/action_pause_gpu\";"				
 		"}"	
 	"}"
 	"</script>"	
@@ -209,7 +214,8 @@ extern const char sHtmlPanelBodyHigh [] =	//@AB
 		"<div class='flex-container'>"	
 			"<button class=\"button\" onclick=\"funz(0)\">Shutdown PC</button>"		
 			"<button class=\"button\" onclick=\"funz(1)\">Restart PC</button>"		
-			"<button class=\"button\" onclick=\"funz(2)\">%s</button>"					
+			"<button class=\"button\" onclick=\"funz(2)\">%s</button>"
+			"<button class=\"button\" onclick=\"funz(3)\">%s</button>"
 	"</div>";
 	
 		
@@ -227,6 +233,12 @@ extern const char sHtmlConnectionBodyHigh [] =
 	"<table>"
 		"<tr><th>Pool address</th><td>%s</td></tr>"
 		"<tr><th>Connected since</th><td>%s</td></tr>"
+		
+		//////////////////////////////////////////////////////////
+		//@AB
+		"<tr><th>System boot time</th><td>%s</td></tr>"
+		//////////////////////////////////////////////////////////
+		
 		"<tr><th>Pool ping time</th><td>%u ms</td></tr>"
 	"</table>"
 	"<h4>Network error log</h4>"
@@ -271,14 +283,17 @@ extern const char sHtmlMonitorBodyHigh [] =	//@AB
 extern const char sHtmlPanelHashBodyHigh [] =	//@AB
 	"<h4>Monero mining extimations</h4>"
 	"<div class='data'>"
-	"<table>"
-		"<tbody>"
-			"<tr>"
-				"<th>Daily</th><th>Weekly</th><th>Montly</th>"	
-			"</tr>"
-			"<tr>"
-				"<td>%s</td><td>%s</td><td>%s</td>"	
-			"</tr>";								
+		"<table>"
+			"<tbody>"
+				"<tr>"
+					"<th>Daily</th><th>Weekly</th><th>Montly</th>"	
+				"</tr>"
+				"<tr>"
+					"<td>%s</td><td>%s</td><td>%s</td>"	
+				"</tr>"
+			"</tbody>"
+		"</table>"
+	"</div>";
 
 extern const char sHtmlResultTableRow [] =
 	"<tr><td colspan='2'>%s</td></tr><tr><td>%llu</td><td>%s</td></tr>";
