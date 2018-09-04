@@ -82,7 +82,7 @@ enum ex_event_name { EV_INVALID_VAL, EV_SOCK_READY, EV_SOCK_ERROR, EV_GPU_RES_ER
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB
-	, EV_HTML_MONITOR, EV_HTML_PANEL, EV_SHUTDOWN_PC, EV_RESTART_PC, EV_PAUSE_MINER
+	, EV_HTML_MONITOR, EV_HTML_PANEL, EV_SHUTDOWN_PC, EV_RESTART_PC, EV_PAUSE_MINER, EV_PAUSE_GPU
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	
 	};
