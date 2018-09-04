@@ -518,6 +518,7 @@ void executor::ex_main()
 	//@AB
 	AdminPanelEnabled = jconf::inst()->AdminPanel();	//@AB	
 	Pausa = false;
+	PausaGPU = false;
 	////////////////////////////////////////////////////////////////////////
 	
 	
@@ -715,7 +716,8 @@ void executor::ex_main()
 		//@AB		
 		case EV_SHUTDOWN_PC:
 		case EV_RESTART_PC:
-		case EV_PAUSE_MINER: 			
+		case EV_PAUSE_MINER: 
+		case EV_PAUSE_GPU:		
 			custom_action(ev.iName);
 			break;
 		/////////////////////////////////////////
@@ -1107,7 +1109,7 @@ void executor::http_hashrate_report(std::string& out)
 		hps_format(fHps[0], num_a, sizeof(num_a));
 		hps_format(fHps[1], num_b, sizeof(num_b));
 		hps_format(fHps[2], num_c, sizeof(num_c));
-
+		
 		fTotal[0] += fHps[0];
 		fTotal[1] += fHps[1];
 		fTotal[2] += fHps[2];
@@ -1170,11 +1172,9 @@ void executor::http_panel_report(std::string& out)
 	}
 	else
 	{	
-		if( !Pausa )			
-			snprintf(buffer, sizeof(buffer), sHtmlPanelBodyHigh, "Pause miner?", "Pause miner");
-		else
-			snprintf(buffer, sizeof(buffer), sHtmlPanelBodyHigh, "Resume miner?", "Resume miner");
-		
+				
+		snprintf(buffer, sizeof(buffer), sHtmlPanelBodyHigh, Pausa ? "Resume miner" : "Pause miner", PausaGPU ? "Resume gpu" : "Pause gpu");		
+				
 		out.append(buffer);		
 	}
 	
@@ -1402,11 +1402,23 @@ void executor::custom_action(ex_event_name ev)
 		
 	case EV_PAUSE_MINER:
 		Pausa = !Pausa;	
+				
+		PausaGPU = Pausa;
 		
 		for (int i = 0; i < pvThreads->size(); i++)				
 			pvThreads->at(i)->doPausa = Pausa;
 		
 		break;
+	case EV_PAUSE_GPU:
+		PausaGPU = !PausaGPU;	
+		
+		for (int i = 0; i < pvThreads->size(); i++)	
+		{			
+			if( pvThreads->at(i)->backendType == pvThreads->at(i)->BackendType::AMD || pvThreads->at(i)->backendType == pvThreads->at(i)->BackendType::NVIDIA )
+				pvThreads->at(i)->doPausa = PausaGPU;
+		}
+		
+		break;		
 
 
 	default:
@@ -1500,7 +1512,65 @@ void executor::http_connection_report(std::string& out)
 	const char* cdate = "not connected";
 	if (pool != nullptr && pool->is_running() && pool->is_logged_in())
 		cdate = time_format(date, sizeof(date), tPoolConnTime);
-
+	
+	
+	
+	
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//@AB
+	
+	std::string fileinfo = "systeminfo.txt";
+	
+	
+	bool ok = false;
+	std::string value;		
+	
+	if (fexists(fileinfo.c_str()))
+	{
+		//ho il file
+		std::ifstream file(fileinfo.c_str());	
+		
+		int i=0; 
+		
+		while (file.good())
+		{
+			std::getline(file, value); 
+			
+			if( i++==11 )
+			{
+				ok = true;
+				break;
+			}
+		}
+	}
+	
+	std::string boot_time;
+	
+	if( !ok ) 
+		boot_time = "N/A";
+	else	
+	{
+		int pos = value.find(":");		
+		
+		if( pos > 0 )
+		{
+			pos += 2;
+			value = value.substr(pos, value.length() - value.substr(0, pos).length());		
+		}	
+		
+		boot_time = value;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
 	size_t n_calls = iPoolCallTimes.size();
 	unsigned int ping_time = 0;
 	if (n_calls > 1)
@@ -1512,7 +1582,11 @@ void executor::http_connection_report(std::string& out)
 
 	snprintf(buffer, sizeof(buffer), sHtmlConnectionBodyHigh,
 		pool != nullptr ? pool->get_pool_addr() : "not connected",
-		cdate, ping_time);
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//@AB
+		cdate, boot_time.c_str(), ping_time);
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	out.append(buffer);
 
 

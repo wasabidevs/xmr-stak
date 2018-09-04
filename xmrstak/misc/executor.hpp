@@ -72,6 +72,7 @@ private:
 	
 	bool AdminPanelEnabled;
 	bool Pausa;
+	bool PausaGPU;
 	
 	inline void comp_localtime_mia(const time_t* ctime, tm* stime)
 	{
@@ -98,10 +99,23 @@ private:
 	}
 	
 	const std::string getMinerStatus() 
-	{			
-		if( almenoUnThreadLavora() )
+	{		
+		bool tlab = almenoUnThreadLavora();
+		
+		if( tlab && !Pausa && !PausaGPU )
 			return "";
-		else return "xmr-stak is currently paused.";
+		
+		else if( tlab && Pausa && PausaGPU )
+			return "xmr-stak is going to pause soon.";
+		
+		else if( tlab && Pausa && !PausaGPU )
+			return "xmr-stak is running on GPU only.";
+		
+		else if( tlab && !Pausa && PausaGPU )
+			return "xmr-stak is running on CPU only.";		
+		
+		else
+			return "xmr-stak is currently paused.";
 	}
 	
 	bool almenoUnThreadLavora() 
