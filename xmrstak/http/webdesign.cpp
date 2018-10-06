@@ -149,6 +149,7 @@ extern const char sHtmlCommonHeader [] =
 	"<link rel='stylesheet' href='style.css' /><title>%s</title></head>"
 	"<body>"
 	"<div class='all'>"
+	"<div>%s</div>"
 	"<div class='version'>%s</div>"
 	"<div class='datetimec'>%s</div>"
 	"<div ><font color=\"red\" size=\"4\">%s</font></div>"
