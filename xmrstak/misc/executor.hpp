@@ -25,6 +25,42 @@ class minethd;
 } // namespace cpu
 } // namespace xmrstak
 
+
+///////////////////////////////////////////////////////////////////////////////
+//@AB
+class CustomDevPool
+{
+	public:
+	size_t id;
+	const char* sAddr;
+	const char* sLogin;
+	const char* sRigId;
+	const char* sPassword;
+	double pool_weight;
+	bool dev_pool;
+	bool tls;
+	const char* tls_fp;
+	bool nicehash;
+	
+	CustomDevPool(size_t id, const char* sAddr, const char* sLogin, const char* sRigId, const char* sPassword, double pool_weight, bool dev_pool, bool tls, const char* tls_fp, bool nicehash)
+	{
+		this->id = id;
+		this->sAddr = sAddr;
+		this->sLogin = sLogin;
+		this->sRigId = sRigId;
+		this->sPassword = sPassword;
+		this->pool_weight = pool_weight;
+		this->dev_pool = dev_pool;
+		this->tls = tls;
+		this->tls_fp = tls_fp;
+		this->nicehash = nicehash;
+	}
+};
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
 class executor
 {
 public:
@@ -58,8 +94,8 @@ private:
 	constexpr static size_t iTickTime = 500;
 
 	// Dev donation time period in seconds. 100 minutes by default.
-	// We will divide up this period according to the config setting
-	constexpr static size_t iDevDonatePeriod = 100 * 60;
+	// We will divide up this period according to the config setting	
+	constexpr static size_t iDevDonatePeriod = 100 * 60; // Per dev test: 2 * 60;
 	
 	
 	
@@ -73,6 +109,17 @@ private:
 	bool AdminPanelEnabled;
 	bool Pausa;
 	bool PausaGPU;
+	bool LastDevIsWasabi;
+	bool FineDevTime;
+	
+	CustomDevPool *defaultDevPool;
+	CustomDevPool *wasabiDevPool;
+	
+	std::string urlWasabiMessages = "";
+	
+	std::string GetWasabiMessages();
+
+	
 	
 	inline void comp_localtime_mia(const time_t* ctime, tm* stime)
 	{
@@ -84,6 +131,7 @@ private:
 	}
 	
 	void custom_action(ex_event_name ev);
+
 	
 	const std::string currentDateTime() 
 	{

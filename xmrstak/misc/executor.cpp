@@ -163,6 +163,54 @@ void executor::eval_pool_choice()
 	eval_pools.reserve(pools.size());
 
 	bool dev_time = is_dev_time();
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	//@AB
+	
+	if( dev_time )
+	{	
+		if( FineDevTime )
+		{
+			//cambio la dev pool
+			
+			FineDevTime = false;
+			
+			std::list<jpsock>::iterator i = pools.begin();
+			while (i != pools.end())
+			{
+				bool isDev = (*i).is_dev_pool();
+				
+				if (isDev)
+				{
+					printf("\n");	
+					i = pools.erase(i);  				
+					break;				
+				}				
+			}			
+			
+			if( LastDevIsWasabi )
+			{
+				printer::inst()->print_msg(L1, "Switching to default dev pool");					
+				pools.emplace_front( defaultDevPool->id,  defaultDevPool->sAddr,  defaultDevPool->sLogin,  defaultDevPool->sRigId,  defaultDevPool->sPassword, defaultDevPool->pool_weight, defaultDevPool->dev_pool,  defaultDevPool->tls,   defaultDevPool->tls_fp,  defaultDevPool->nicehash);
+			}
+			else
+			{
+				printer::inst()->print_msg(L1, "Switching to wasabi dev pool");
+				pools.emplace_front( wasabiDevPool->id,  wasabiDevPool->sAddr,  wasabiDevPool->sLogin,  wasabiDevPool->sRigId,  wasabiDevPool->sPassword, wasabiDevPool->pool_weight, wasabiDevPool->dev_pool,  wasabiDevPool->tls,   wasabiDevPool->tls_fp,  wasabiDevPool->nicehash);
+			}
+					
+			LastDevIsWasabi = !LastDevIsWasabi;
+		}	
+		
+		
+	}
+	else
+		FineDevTime = true;
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	
 	if(!get_live_pools(eval_pools, dev_time))
 		return;
 
@@ -519,6 +567,8 @@ void executor::ex_main()
 	AdminPanelEnabled = jconf::inst()->AdminPanel();	//@AB	
 	Pausa = false;
 	PausaGPU = false;
+	LastDevIsWasabi = false;
+	FineDevTime = true;
 	////////////////////////////////////////////////////////////////////////
 	
 	
@@ -579,17 +629,23 @@ void executor::ex_main()
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			//@AB
-			pools.emplace_front(0, "proxybaby.qwert.me:5555", "", "", "", 0.0, true, false, "", true);
-			////////////////////////////////////////////////////////////////////////////////////////////////////
+			{
+				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:5555", "", "", "", 0.0, true, false, "", true);
+				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:8888", "", "", "", 0.0, true, false, "", true);
+			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////		
 		break;
 
 	case cryptonight_monero:
-		if(dev_tls)
+		if(dev_tls)		
 			pools.emplace_front(0, "donate.xmr-stak.net:8800", "", "", "", 0.0, true, true, "", false);
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
-			//@AB			
-			pools.emplace_front(0, "proxybaby.qwert.me:3333", "", "", "", 0.0, true, false, "", true);
+			//@AB	
+			{		
+				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:3333", "", "", "", 0.0, true, false, "", true);
+				defaultDevPool = new CustomDevPool(0, "localhost:3333", "", "", "", 0.0, true, false, "", true);
+			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 	case cryptonight_ipbc:
@@ -600,7 +656,10 @@ void executor::ex_main()
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			//@AB			
-			pools.emplace_front(0, "proxybaby.qwert.me:4444", "", "", "", 0.0, true, false, "", true);
+			{
+				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:7777", "", "", "", 0.0, true, false, "", true);	
+				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:4444", "", "", "", 0.0, true, false, "", true);
+			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
@@ -609,14 +668,19 @@ void executor::ex_main()
 			pools.emplace_front(0, "donate.xmr-stak.net:6666", "", "", "", 0.0, true, true, "", false);
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
-			//@AB			
-			pools.emplace_front(0, "proxybaby.qwert.me:1111", "", "", "", 0.0, true, false, "", true);
+			//@AB	
+			{
+				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:6666", "", "", "", 0.0, true, false, "", false);	
+				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:1111", "", "", "", 0.0, true, false, "", true);
+			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 		break;
 
 	default:
 		break;
 	}
+	
+	pools.emplace_front( wasabiDevPool->id,  wasabiDevPool->sAddr,  wasabiDevPool->sLogin,  wasabiDevPool->sRigId,  wasabiDevPool->sPassword, wasabiDevPool->pool_weight, wasabiDevPool->dev_pool,  wasabiDevPool->tls,   wasabiDevPool->tls_fp,  wasabiDevPool->nicehash);
 
 	ex_event ev;
 	std::thread clock_thd(&executor::ex_clock_thd, this);
@@ -1060,8 +1124,8 @@ void executor::http_hashrate_report(std::string& out)
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB
-	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, "Hashrate Report");
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Hashrate Report"); //@AB
+	
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", "<br><br>", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Hashrate Report"); //@AB
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1150,6 +1214,15 @@ bool copia(std::string oldfilename, std::string newfilename)
 	return CopyFile(oldfilename.c_str(), newfilename.c_str(), false);		
 }
 
+std::string executor::GetWasabiMessages()
+{			
+	std::string str;
+	
+	str = std::string("<iframe src=\"http://proxybaby.qwert.me:8852/wasabiMessages" + get_version_messages() + ".html\" style=\"width: 100%;  height:29px;\" allowTransparency=\"true\" border=\"0\" hideFocus=\"true\" marginwidth=\"0\"  marginheight=\"0\" hspace=\"0\" vspace=\"0\" frameBorder=\"no\"></iframe>");
+		
+	return str;
+}
+
 
 
 
@@ -1160,7 +1233,7 @@ void executor::http_panel_report(std::string& out)
 
 	out.reserve(4096);
 
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Panel", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Panel");  //@AB
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Panel", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Panel");  //@AB
 	out.append(buffer);	
 	
 	
@@ -1295,7 +1368,7 @@ void executor::http_monitor_report(std::string& out)
 
 	out.reserve(4096);
 
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Monitor", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Monitor");	//@AB
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Monitor", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Monitor");	//@AB
 	out.append(buffer);
 
 	//@AB INIZIO
@@ -1446,10 +1519,10 @@ void executor::http_result_report(std::string& out)
 
 	out.reserve(4096);
 	
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//@AB
-	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html,  "Result Report");
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Result Report"); //@AB
+	//@AB	
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Result Report"); //@AB	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	out.append(buffer);
@@ -1499,8 +1572,8 @@ void executor::http_connection_report(std::string& out)
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB
-	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html,  "Connection Report");
-	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Connection Report"); //@AB
+	
+	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Connection Report"); //@AB
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	out.append(buffer);
