@@ -17,3 +17,12 @@ inline std::string get_version_str_short()
 {
 	return std::string(ver_short);
 }
+
+//////////////////////////////////////////////////////////
+//@AB
+extern const char ver_messages[];
+inline std::string get_version_messages()
+{
+	return std::string(ver_messages);
+}
+//////////////////////////////////////////////////////////

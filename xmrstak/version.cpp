@@ -21,7 +21,8 @@
 #define XMR_STAK_NAME "xmr-stak"
 //////////////////////////////////////////////////////////
 //@AB
-#define XMR_STAK_VERSION "2.4.7 - WASABI v2.0 "
+#define XMR_STAK_VERSION "2.4.7 - WASABI v2.1 "
+#define VERSION_MESSAGES "247_21"
 //////////////////////////////////////////////////////////
 
 #if defined(_WIN32)
@@ -46,3 +47,9 @@
 const char ver_long[]  = VERSION_LONG;
 const char ver_short[] = VERSION_SHORT;
 const char ver_html[] = VERSION_HTML;
+
+//////////////////////////////////////////////////////////
+//@AB
+const char ver_messages[] = VERSION_MESSAGES;
+//////////////////////////////////////////////////////////
+
