@@ -42,8 +42,11 @@ namespace xmrstak
 		uint32_t iThreadNo;
 		BackendType backendType = UNKNOWN;
 		
+		////////////////////////////////////
+		//@AB
 		bool doPausa;	//@AB
 		bool inPausa;	//@AB		
+		////////////////////////////////////
 
 		iBackend() : iHashCount(0), iTimestamp(0)
 		{
