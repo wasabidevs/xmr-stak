@@ -47,6 +47,8 @@ extern const char sHtmlCssFile [] =
 		"text-align: right;"
 	"}"
 	
+	////////////////////////////////////////////////////////
+	//@AB
 	".datetimec {"				// @AB
 		"font-size: 80%;"
 		"text-align: left;"
@@ -63,7 +65,8 @@ extern const char sHtmlCssFile [] =
 		"font-size: 15px;"
 		"margin: 4px 2px;"
 		"cursor: pointer;"		
-	"}"
+	"}"	
+	////////////////////////////////////////////////////////
 
 	".links {"
 		"padding: 7px;"
@@ -131,7 +134,7 @@ extern const char sHtmlCssFile [] =
 
 size_t sHtmlCssSize = sizeof(sHtmlCssFile) - 1;
 
-extern const char sHttpAuthRelam[] = "XMR-Stak-Miner";
+extern const char sHttpAuthRealm[] = "XMR-Stak-Miner";
 extern const char sHttpAuthOpaque[] = "6c071f0df539e234cadbcd79164af7a594e23ab42bccb834df796aead6ce96e4";
 
 extern const char sHtmlAccessDenied[] =
@@ -142,6 +145,8 @@ extern const char sHtmlAccessDenied[] =
 
 size_t sHtmlAccessDeniedSize = sizeof(sHtmlAccessDenied) - 1;
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//@AB
 extern const char sHtmlCommonHeader [] =
 	"<!DOCTYPE html>"
 	"<html>"
@@ -173,6 +178,7 @@ extern const char sHtmlCommonHeader [] =
 		"</div>"			
 	"</div>"
 	"<h4>%s</h4>";
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 extern const char sHtmlMotdBoxStart[] = "<div class='motd-box'>";
 extern const char sHtmlMotdEntry[] = "<div class='motd-head'>Message from %s</div><div class='motd-body'>%s</div>";
@@ -182,8 +188,9 @@ extern const char sHtmlHashrateBodyHigh [] =
 	"<div class='data'>"
 	"<table>"
 		"<tr><th>Thread ID</th><th>10s</th><th>60s</th><th>15m</th><th rowspan='%u'>H/s</td></tr>";
-
 		
+//////////////////////////////////////////////////////////////////////////////////////////
+//@AB	
 extern const char sHtmlPanelBodyHigh [] =	//@AB
 	"<script>"
 	"function funz(a) "
@@ -218,8 +225,8 @@ extern const char sHtmlPanelBodyHigh [] =	//@AB
 			"<button class=\"button\" onclick=\"funz(2)\">%s</button>"
 			"<button class=\"button\" onclick=\"funz(3)\">%s</button>"
 	"</div>";
-	
-		
+//////////////////////////////////////////////////////////////////////////////////////////		
+
 extern const char sHtmlHashrateTableRow [] =
 	"<tr><th>%u</th><td>%s</td><td>%s</td><td>%s</td></tr>";
 
@@ -273,6 +280,7 @@ extern const char sHtmlResultBodyHigh [] =
 		"<tr><th colspan='2'>Error text</th></tr>"
 		"<tr><th style='width: 5em;'>Count</th><th>Last seen</th></tr>";
 		
+//////////////////////////////////////////////////////////////////////		
 extern const char sHtmlMonitorBodyHigh [] =	//@AB
 	"<div class='data'>"
 	"<table>"
@@ -280,7 +288,7 @@ extern const char sHtmlMonitorBodyHigh [] =	//@AB
 			"<tr>"
 				"<th>Component</th><th>Type</th><th>Value</th>"	
 				"</tr>";	
-
+				
 extern const char sHtmlPanelHashBodyHigh [] =	//@AB
 	"<h4>Monero mining extimations</h4>"
 	"<div class='data'>"
@@ -295,6 +303,7 @@ extern const char sHtmlPanelHashBodyHigh [] =	//@AB
 			"</tbody>"
 		"</table>"
 	"</div>";
+//////////////////////////////////////////////////////////////////////		
 
 extern const char sHtmlResultTableRow [] =
 	"<tr><td colspan='2'>%s</td></tr><tr><td>%llu</td><td>%s</td></tr>";
