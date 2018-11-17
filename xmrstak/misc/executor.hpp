@@ -58,9 +58,6 @@ class CustomDevPool
 };
 ///////////////////////////////////////////////////////////////////////////////
 
-
-
-
 class executor
 {
 public:
@@ -94,11 +91,8 @@ private:
 	constexpr static size_t iTickTime = 500;
 
 	// Dev donation time period in seconds. 100 minutes by default.
-	// We will divide up this period according to the config setting	
-	constexpr static size_t iDevDonatePeriod = 100 * 60; // Per dev test: 2 * 60;
-	
-	
-	
+	// We will divide up this period according to the config setting
+	constexpr static size_t iDevDonatePeriod = 100 * 60;
 	
 	
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,11 +174,6 @@ private:
 // @AB - FINE
 ////////////////////////////////////////////////////////////////////////////////		
 
-
-
-	
-		
-
 	inline bool is_dev_time()
 	{
 		//Add 2 seconds to compensate for connect
@@ -230,16 +219,15 @@ private:
 	void http_result_report(std::string& out);
 	void http_connection_report(std::string& out);
 	void http_json_report(std::string& out);
+
+	void http_report(ex_event_name ev);
+	void print_report(ex_event_name ev);
 	
 	//////////////////////////////////////////////////////////////////////
 	//@AB
 	void http_monitor_report(std::string& out);		//@AB
 	void http_panel_report(std::string& out); 		//@AB		
-	//////////////////////////////////////////////////////////////////////
-	
-	
-	void http_report(ex_event_name ev);
-	void print_report(ex_event_name ev);
+	//////////////////////////////////////////////////////////////////////	
 
 	std::string* pHttpString = nullptr;
 	std::promise<void> httpReady;

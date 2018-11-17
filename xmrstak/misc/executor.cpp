@@ -165,7 +165,7 @@ void executor::eval_pool_choice()
 	bool dev_time = is_dev_time();
 	
 	
-	///////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////
 	//@AB
 	
 	if( dev_time )
@@ -560,8 +560,6 @@ void executor::ex_main()
 		win_exit();
 	}
 	
-	
-	
 	////////////////////////////////////////////////////////////////////////
 	//@AB
 	AdminPanelEnabled = jconf::inst()->AdminPanel();	//@AB	
@@ -569,10 +567,8 @@ void executor::ex_main()
 	PausaGPU = false;
 	LastDevIsWasabi = false;
 	FineDevTime = true;
-	////////////////////////////////////////////////////////////////////////
-	
-	
-	
+	////////////////////////////////////////////////////////////////////////	
+
 	telem = new xmrstak::telemetry(pvThreads->size());
 
 	set_timestamp();
@@ -631,36 +627,43 @@ void executor::ex_main()
 			//@AB
 			{
 				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:5555", "", "", "", 0.0, true, false, "", true);
-				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:8888", "", "", "", 0.0, true, false, "", true);
+				defaultDevPool = new CustomDevPool(0, "proxybaby.qwert.me:5555", "", "", "", 0.0, true, false, "", true);
+				
+				//pools.emplace_front(0, "donate.xmr-stak.net:5555", "", "", "", 0.0, true, false, "", true);
 			}
-			////////////////////////////////////////////////////////////////////////////////////////////////////		
+			////////////////////////////////////////////////////////////////////////////////////////////////////			
 		break;
-
+	case cryptonight_monero_v8:
 	case cryptonight_monero:
-		if(dev_tls)		
+		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:8800", "", "", "", 0.0, true, true, "", false);
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			//@AB	
 			{		
-				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:3333", "", "", "", 0.0, true, false, "", true);
-				defaultDevPool = new CustomDevPool(0, "localhost:3333", "", "", "", 0.0, true, false, "", true);
+				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:6666", "", "", "", 0.0, true, false, "", true);
+				defaultDevPool = new CustomDevPool(0, "proxybaby.qwert.me:6666", "", "", "", 0.0, true, false, "", true);
+				
+				//pools.emplace_front(0, "donate.xmr-stak.net:5500", "", "", "", 0.0, true, false, "", false);
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////////
+			
 		break;
 	case cryptonight_ipbc:
 	case cryptonight_aeon:
-	case cryptonight_lite:
+	case cryptonight_lite:	
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:7777", "", "", "", 0.0, true, true, "", true);
 		else
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			//@AB			
 			{
-				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:7777", "", "", "", 0.0, true, false, "", true);	
+				defaultDevPool = new CustomDevPool(0, "proxybaby.qwert.me:4444", "", "", "", 0.0, true, false, "", true);
 				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:4444", "", "", "", 0.0, true, false, "", true);
+				
+				//pools.emplace_front(0, "donate.xmr-stak.net:4444", "", "", "", 0.0, true, false, "", true);
 			}
-			////////////////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////						
 		break;
 
 	case cryptonight:
@@ -670,17 +673,18 @@ void executor::ex_main()
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			//@AB	
 			{
-				defaultDevPool = new CustomDevPool(0, "donate.xmr-stak.net:6666", "", "", "", 0.0, true, false, "", false);	
+				defaultDevPool = new CustomDevPool(0, "proxybaby.qwert.me:1111", "", "", "", 0.0, true, false, "", true);
 				wasabiDevPool = new CustomDevPool(0, "proxybaby.qwert.me:1111", "", "", "", 0.0, true, false, "", true);
+				
+				//pools.emplace_front(0, "donate.xmr-stak.net:3333", "", "", "", 0.0, true, false, "", false);
 			}
-			////////////////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////		
+			
 		break;
 
 	default:
 		break;
 	}
-	
-	pools.emplace_front( wasabiDevPool->id,  wasabiDevPool->sAddr,  wasabiDevPool->sLogin,  wasabiDevPool->sRigId,  wasabiDevPool->sPassword, wasabiDevPool->pool_weight, wasabiDevPool->dev_pool,  wasabiDevPool->tls,   wasabiDevPool->tls_fp,  wasabiDevPool->nicehash);
 
 	ex_event ev;
 	std::thread clock_thd(&executor::ex_clock_thd, this);
@@ -722,8 +726,12 @@ void executor::ex_main()
 			break;
 
 		case EV_GPU_RES_ERROR:
-			log_result_error(std::string(ev.oGpuError.error_str + std::string(" GPU ID ") + std::to_string(ev.oGpuError.idx)));
+		{
+			std::string err_msg = std::string(ev.oGpuError.error_str) + " GPU ID " + std::to_string(ev.oGpuError.idx);
+			printer::inst()->print_msg(L0, err_msg.c_str());
+			log_result_error(std::move(err_msg));
 			break;
+		}
 
 		case EV_PERF_TICK:
 			for (i = 0; i < pvThreads->size(); i++)
@@ -765,7 +773,8 @@ void executor::ex_main()
 		case EV_HTML_RESULTS:
 		case EV_HTML_CONNSTAT:
 		case EV_HTML_JSON:
-		
+	
+			
 		/////////////////////////////////////////
 		//@AB
 		case EV_HTML_MONITOR:	//@AB
@@ -785,8 +794,9 @@ void executor::ex_main()
 			custom_action(ev.iName);
 			break;
 		/////////////////////////////////////////
-
-		
+			
+			
+			
 
 		case EV_HASHRATE_LOOP:
 			print_report(EV_USR_HASHRATE);
@@ -1121,15 +1131,13 @@ void executor::http_hashrate_report(std::string& out)
 	out.reserve(4096);
 	
 	
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB
 	
 	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", "<br><br>", ver_html, currentDateTime().c_str(), getMinerStatus().c_str(), "Hashrate Report"); //@AB
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Hashrate Report", ver_html, "Hashrate Report");
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
 	
 	out.append(buffer);
 
@@ -1173,7 +1181,7 @@ void executor::http_hashrate_report(std::string& out)
 		hps_format(fHps[0], num_a, sizeof(num_a));
 		hps_format(fHps[1], num_b, sizeof(num_b));
 		hps_format(fHps[2], num_c, sizeof(num_c));
-		
+
 		fTotal[0] += fHps[0];
 		fTotal[1] += fHps[1];
 		fTotal[2] += fHps[2];
@@ -1191,8 +1199,6 @@ void executor::http_hashrate_report(std::string& out)
 	snprintf(buffer, sizeof(buffer), sHtmlHashrateBodyLow, num_a, num_b, num_c, num_d);
 	out.append(buffer);
 }
-
-
 
 
 
@@ -1255,7 +1261,7 @@ void executor::http_panel_report(std::string& out)
 	
 	
 	//@AB Parte per stima XMR 
-	if(jconf::inst()->GetMiningCoin() == "monero7")
+	if(jconf::inst()->GetMiningCoin() == "monero")
 	{			
 		
 		std::string fileinfo = "info1.txt";		
@@ -1506,24 +1512,19 @@ void executor::custom_action(ex_event_name ev)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
-
 void executor::http_result_report(std::string& out)
 {
 	char date[128];
 	char buffer[4096];
 
 	out.reserve(4096);
-	
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB	
 	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Result Report"); //@AB	
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Result Report", ver_html,  "Result Report");
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	
 	out.append(buffer);
 
@@ -1571,10 +1572,11 @@ void executor::http_connection_report(std::string& out)
 	out.reserve(4096);
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//@AB
-	
+	//@AB	
 	snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", GetWasabiMessages().c_str(), ver_html, currentDateTime().c_str(), getMinerStatus().c_str(),  "Connection Report"); //@AB
+	//snprintf(buffer, sizeof(buffer), sHtmlCommonHeader, "Connection Report", ver_html,  "Connection Report");
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	
 	out.append(buffer);
 
@@ -1585,13 +1587,9 @@ void executor::http_connection_report(std::string& out)
 	const char* cdate = "not connected";
 	if (pool != nullptr && pool->is_running() && pool->is_logged_in())
 		cdate = time_format(date, sizeof(date), tPoolConnTime);
+
 	
-	
-	
-	
-	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//@AB
 	
 	std::string fileinfo = "systeminfo.txt";
@@ -1638,11 +1636,7 @@ void executor::http_connection_report(std::string& out)
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	
-	
-	
-	
-	
+
 	
 	size_t n_calls = iPoolCallTimes.size();
 	unsigned int ping_time = 0;
@@ -1658,8 +1652,10 @@ void executor::http_connection_report(std::string& out)
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//@AB
 		cdate, boot_time.c_str(), ping_time);
+		//cdate, ping_time);
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+			
+		
 	out.append(buffer);
 
 
@@ -1772,7 +1768,7 @@ void executor::http_json_report(std::string& out)
 		if(i != 0) cn_error.append(1, ',');
 
 		snprintf(buffer, sizeof(buffer), sJsonApiConnectionError,
-			int_port(duration_cast<seconds>(vMineResults[i].time.time_since_epoch()).count()),
+			int_port(duration_cast<seconds>(vSocketLog[i].time.time_since_epoch()).count()),
 			vSocketLog[i].msg.c_str());
 		cn_error.append(buffer);
 	}
@@ -1817,7 +1813,7 @@ void executor::http_report(ex_event_name ev)
 	case EV_HTML_PANEL: //@AB
 		http_panel_report(*pHttpString);	
 		break;			
-	////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////		
 
 	case EV_HTML_JSON:
 		http_json_report(*pHttpString);
@@ -1838,11 +1834,10 @@ void executor::get_http_report(ex_event_name ev_id, std::string& data)
 	assert(pHttpString == nullptr);
 	assert(ev_id == EV_HTML_HASHRATE || ev_id == EV_HTML_RESULTS
 		|| ev_id == EV_HTML_CONNSTAT || ev_id == EV_HTML_JSON
-		
 		//////////////////////////////////////////////////////////////////////////////
 		//@AB
 		|| ev_id == EV_HTML_MONITOR || ev_id == EV_HTML_PANEL  //@AB
-		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////		
 		
 		);
 
