@@ -396,7 +396,7 @@ int main(int argc, char *argv[])
 	//@AB
 	system("systeminfo > systeminfo.txt");	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	std::string pathWithName(argv[0]);
 	std::string separator("/");
 	auto pos = pathWithName.rfind(separator);
@@ -754,6 +754,7 @@ int main(int argc, char *argv[])
 
 	if (!BackendConnector::self_test())
 	{
+		printer::inst()->print_msg(L0, "Self test not passed!");
 		win_exit();
 		return 1;
 	}
@@ -782,9 +783,8 @@ int main(int argc, char *argv[])
 	//@AB	
 	printer::inst()->print_str("Made more spicy by Wasabi Devs.\n");
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	
+		
 	printer::inst()->print_str("Based on CPU mining code by wolf9466 (heavily optimized by fireice_uk).\n");
-
 #ifndef CONF_NO_CUDA
 	printer::inst()->print_str("Based on NVIDIA mining code by KlausT and psychocrypt.\n");
 #endif
@@ -794,10 +794,38 @@ int main(int argc, char *argv[])
 	char buffer[64];
 	snprintf(buffer, sizeof(buffer), "\nConfigurable dev donation level is set to %.1f%%\n\n", fDevDonationLevel * 100.0);
 	printer::inst()->print_str(buffer);
+	printer::inst()->print_str("-------------------------------------------------------------------\n");
 	printer::inst()->print_str("You can use following keys to display reports:\n");
 	printer::inst()->print_str("'h' - hashrate\n");
 	printer::inst()->print_str("'r' - results\n");
 	printer::inst()->print_str("'c' - connection\n");
+	printer::inst()->print_str("-------------------------------------------------------------------\n");
+	printer::inst()->print_str("Upcoming xmr-stak-gui is sponsored by:\n");
+	printer::inst()->print_str("   #####   ______               ____\n");
+	printer::inst()->print_str(" ##     ## | ___ \\             /  _ \\\n");
+	printer::inst()->print_str("#    _    #| |_/ /_   _   ___  | / \\/ _   _  _ _  _ _  ___  _ __    ___  _   _\n");
+	printer::inst()->print_str("#   |_|   #|    /| | | | / _ \\ | |   | | | || '_|| '_|/ _ \\| '_ \\  / __|| | | |\n");
+	printer::inst()->print_str("#         #| |\\ \\| |_| || (_) || \\_/\\| |_| || |  | | |  __/| | | || (__ | |_| |\n");
+	printer::inst()->print_str(" ##     ## \\_| \\_|\\__, | \\___/ \\____/ \\__,_||_|  |_|  \\___||_| |_| \\___| \\__, |\n");
+	printer::inst()->print_str("   #####           __/ |                                                  __/ |\n");
+	printer::inst()->print_str("                  |___/   https://ryo-currency.com                       |___/\n\n");
+	printer::inst()->print_str("This currency is a way for us to implement the ideas that we were unable to in\n");
+	printer::inst()->print_str("Monero. See https://github.com/fireice-uk/cryptonote-speedup-demo for details.\n");
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//@AB
+	
+	printer::inst()->print_str(" __          __             _     _   ______    _ _ _   _             \n");
+	printer::inst()->print_str(" \\ \\        / /            | |   (_) |  ____|  | (_) | (_)            \n");
+	printer::inst()->print_str("  \\ \\  /\\  / /_ _ ___  __ _| |__  _  | |__   __| |_| |_ _  ___  _ __  \n");
+	printer::inst()->print_str("   \\ \\/  \\/ / _` / __|/ _` | '_ \\| | |  __| / _` | | __| |/ _ \\| '_ \\ \n");
+	printer::inst()->print_str("    \\  /\\  / (_| \\__ \\ (_| | |_) | | | |___| (_| | | |_| | (_) | | | |\n");
+	printer::inst()->print_str("     \\/  \\/ \\__,_|___/\\__,_|_.__/|_| |______\\__,_|_|\\__|_|\\___/|_| |_|\n");                                                                      
+                                                                      
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	printer::inst()->print_str("-------------------------------------------------------------------\n");
 	printer::inst()->print_msg(L0, "Mining coin: %s", jconf::inst()->GetMiningCoin().c_str());
 
@@ -806,13 +834,14 @@ int main(int argc, char *argv[])
 		printer::inst()->print_str("!!!! Doing only a benchmark and exiting. To mine, remove the '--benchmark' option. !!!!\n");
 		return do_benchmark(params::inst().benchmark_block_version, params::inst().benchmark_wait_sec, params::inst().benchmark_work_sec);
 	}
-
+	
 	executor::inst()->ex_start(jconf::inst()->DaemonMode());
 
 	uint64_t lastTime = get_timestamp_ms();
 	int key;
 	while(true)
 	{
+		
 		key = get_key();
 
 		switch(key)
