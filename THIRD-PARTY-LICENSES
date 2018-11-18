@@ -34,3 +34,21 @@ Source: https://github.com/willzhang4a58/cpputil
 License: MIT License
 
 -------------------------------------------------------------------------
+
+Package: HardwareInfo
+Authors: Wasabi Team
+License: GNU GPLv3
+
+-------------------------------------------------------------------------
+
+Package: Wasabi
+Authors: Wasabi Team
+License: GNU GPLv3
+
+-------------------------------------------------------------------------
+
+Package: OpenHardwareMonitor
+Authors: Michael Möller
+License: Mozilla License 2.0
+
+-------------------------------------------------------------------------
